@@ -209,9 +209,9 @@ requestAnimationFrame(drawGrid);
    CONTACT FORM — EmailJS INTEGRATION
 ============================================================ */
 (function () {
-  const PUBLIC_KEY = 'YOUR_PUBLIC_KEY';
-  const SERVICE_ID = 'YOUR_SERVICE_ID';
-  const TEMPLATE_ID = 'YOUR_TEMPLATE_ID';
+  const PUBLIC_KEY = 'flG3J47Zu6wbJAuFm';
+  const SERVICE_ID = 'service_5vfymdk';
+  const TEMPLATE_ID = 'template_nvud4tx';
   const DESTINATION_EMAIL = 'i246508@isb.nu.edu.pk';
 
   if (window.emailjs) {
