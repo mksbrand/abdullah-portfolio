@@ -19,6 +19,23 @@
 <div class="scanlines"></div>
 <div class="vignette"></div>
 <div class="cursor-glow" id="cursorGlow"></div>
+<div class="fly-shapes" id="flyShapes"></div>
+<canvas id="trail-canvas"></canvas>
+<div class="scroll-progress" id="scrollProgress"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="cursor-dot" id="cursorDot"></div>
+
+<div class="corner-dial" id="cornerDial">
+  <svg viewBox="0 0 60 60" class="dial-svg">
+    <circle cx="30" cy="30" r="26" class="dial-track"></circle>
+    <circle cx="30" cy="30" r="26" class="dial-fill" id="dialFill"></circle>
+  </svg>
+  <span class="dial-label" id="dialLabel">00/08</span>
+</div>
+
+<button class="scroll-top" id="scrollTop" aria-label="Back to top">
+  <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M12 19V5M12 5l-6 6M12 5l6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
 
 <!-- ===== BOOT LOADER ===== -->
 <div id="boot-loader">
@@ -46,6 +63,7 @@
     <button class="tab-btn" data-tab="projects"><span class="tab-idx">05</span>Projects</button>
     <button class="tab-btn" data-tab="achievements"><span class="tab-idx">06</span>Achievements</button>
     <button class="tab-btn" data-tab="contact"><span class="tab-idx">07</span>Contact</button>
+    <span class="tab-indicator" id="tabIndicator"></span>
   </nav>
 
   <button class="burger" id="burger" aria-label="Toggle menu">
