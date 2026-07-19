@@ -164,7 +164,7 @@ main{ position:relative; z-index:1; padding-top: 86px; min-height:100vh; }
 @keyframes pulse{ 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:0.4; transform:scale(0.7); } }
 
 .hero-name{ font-family: var(--font-display); font-weight:900; font-size: clamp(2rem, 4.6vw, 3.6rem); line-height:1.15; }
-.hero-name span{ display:block; }
+.hero-name > span{ display:block; }
 
 .glitch{ position:relative; color: var(--text); }
 .glitch.accent{ color: var(--cyan); text-shadow: 0 0 26px rgba(0,246,255,0.55); }
@@ -463,3 +463,392 @@ main{ position:relative; z-index:1; padding-top: 86px; min-height:100vh; }
 .burger.active span:nth-child(1){ transform: translateY(7px) rotate(45deg); }
 .burger.active span:nth-child(2){ opacity:0; }
 .burger.active span:nth-child(3){ transform: translateY(-7px) rotate(-45deg); }
+
+/* =========================================================================
+   ============  ULTRA ANIMATION UPGRADE — v3.0  =============
+   Scroll-driven parallax · 3D tilt · text splitting · magnetic buttons
+   flying shapes · custom cursor · ripple clicks · dramatic transitions
+========================================================================= */
+
+/* ---------- Scroll progress bar ---------- */
+.scroll-progress{
+  position: fixed; top:0; left:0; height:3px; width:0%; z-index: 1000;
+  background: linear-gradient(90deg, var(--cyan), var(--purple), var(--cyan));
+  background-size: 200% 100%;
+  box-shadow: 0 0 14px rgba(0,246,255,0.7);
+  animation: progressShine 3s linear infinite;
+  transition: width 0.12s linear;
+  pointer-events: none;
+}
+@keyframes progressShine{ to{ background-position: -200% 0; } }
+
+/* ---------- Custom magnetic cursor ---------- */
+.cursor-dot{
+  position: fixed; width:8px; height:8px; border-radius:50%;
+  background: var(--cyan); pointer-events:none; z-index: 998;
+  transform: translate(-50%,-50%); box-shadow: 0 0 10px var(--cyan), 0 0 22px var(--cyan);
+  transition: width .25s var(--ease), height .25s var(--ease), background .25s ease, opacity .25s ease;
+  mix-blend-mode: screen; left:50%; top:50%;
+}
+.cursor-dot.hovering{ width:44px; height:44px; background: rgba(0,246,255,0.18); box-shadow:0 0 20px rgba(0,246,255,0.5); }
+.cursor-ring{
+  position: fixed; width:32px; height:32px; border-radius:50%;
+  border: 1.5px solid rgba(0,246,255,0.45); pointer-events:none; z-index:997;
+  transform: translate(-50%,-50%); left:50%; top:50%;
+  transition: width .3s var(--ease), height .3s var(--ease), border-color .3s ease, opacity .3s ease;
+}
+.cursor-ring.hovering{ width:14px; height:14px; border-color: var(--purple); }
+body{ cursor:none; }
+a, button, .tab-btn, input, textarea{ cursor:none; }
+@media (hover:none), (pointer:coarse){
+  .cursor-dot,.cursor-ring{ display:none; }
+  body, a, button, .tab-btn, input, textarea{ cursor:auto; }
+}
+
+/* ---------- Nav sliding indicator ---------- */
+.tabs{ position:relative; }
+.tab-indicator{
+  position:absolute; bottom:-1px; height:2px; left:0; width:0;
+  background: linear-gradient(90deg, var(--cyan), var(--purple));
+  box-shadow: 0 0 12px var(--cyan);
+  transition: left 0.45s var(--ease), width 0.45s var(--ease);
+  border-radius: 2px; pointer-events:none;
+}
+
+/* ---------- Ripple click effect ---------- */
+.btn, .tab-btn{ position:relative; overflow:hidden; }
+.ripple-el{
+  position:absolute; border-radius:50%; transform: scale(0);
+  background: rgba(255,255,255,0.55); pointer-events:none;
+  animation: rippleAnim 0.65s ease-out forwards;
+}
+@keyframes rippleAnim{ to{ transform: scale(3.4); opacity:0; } }
+
+/* ---------- Magnetic buttons ---------- */
+.btn, .tab-btn, .brand{ will-change: transform; }
+
+/* ---------- 3D tilt cards ---------- */
+.glass-card, .project-card{
+  transform-style: preserve-3d; will-change: transform;
+  --mx:50%; --my:50%;
+}
+.glass-card::after{
+  content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none; z-index:0;
+  background: radial-gradient(circle at var(--mx) var(--my), rgba(0,246,255,0.14), transparent 60%);
+  opacity:0; transition: opacity 0.4s ease;
+}
+.glass-card:hover::after{ opacity:1; }
+.glass-card > *{ position:relative; z-index:1; }
+
+/* ---------- Text splitting: flying characters ---------- */
+.char{
+  display:inline-block; opacity:0; white-space:pre;
+  transform: translateY(0.8em) rotateX(-80deg) scale(0.5);
+  animation: charFlyIn 0.75s cubic-bezier(.2,1.4,.4,1) forwards;
+  animation-delay: calc(var(--i, 0) * 0.032s);
+  transform-origin: bottom center;
+}
+@keyframes charFlyIn{
+  60%{ opacity:1; }
+  to{ opacity:1; transform: translateY(0) rotateX(0) scale(1); }
+}
+.word{ display:inline-block; }
+
+/* ---------- Reveal variants: fly in from different directions ---------- */
+.reveal{
+  opacity:0;
+  transition: opacity 0.85s var(--ease), transform 0.85s var(--ease), filter 0.85s var(--ease);
+  filter: blur(8px);
+  transition-delay: var(--rd, 0s);
+}
+.reveal.visible{ opacity:1; filter: blur(0); }
+.reveal[data-dir="up"]{ transform: translateY(60px); }
+.reveal[data-dir="left"]{ transform: translateX(-90px) rotate(-4deg); }
+.reveal[data-dir="right"]{ transform: translateX(90px) rotate(4deg); }
+.reveal[data-dir="scale"]{ transform: scale(0.7) translateY(40px); }
+.reveal[data-dir="rotate"]{ transform: perspective(900px) rotateY(40deg) translateX(50px); }
+.reveal.visible[data-dir="up"],
+.reveal.visible[data-dir="left"],
+.reveal.visible[data-dir="right"],
+.reveal.visible[data-dir="scale"],
+.reveal.visible[data-dir="rotate"]{
+  transform: translate(0,0) scale(1) rotate(0deg) perspective(900px) rotateY(0deg);
+}
+
+/* ---------- Flying background shapes ---------- */
+.fly-shapes{ position: fixed; inset:0; z-index:-1; pointer-events:none; overflow:hidden; }
+.fly-shape{ position:absolute; opacity:0.4; animation-timing-function: linear; animation-iteration-count: infinite; }
+.fly-shape.tri{ width:0; height:0; border-left:16px solid transparent; border-right:16px solid transparent; border-bottom:28px solid rgba(0,246,255,0.16); }
+.fly-shape.hex{ width:32px; height:18px; background: rgba(168,85,247,0.15); clip-path: polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%); }
+.fly-shape.ring{ width:26px; height:26px; border-radius:50%; border:2px solid rgba(0,246,255,0.22); }
+.fly-shape.dot{ width:5px; height:5px; border-radius:50%; background: var(--cyan); box-shadow:0 0 10px var(--cyan); }
+.fly-shape.plus{ width:16px; height:16px; }
+.fly-shape.plus::before, .fly-shape.plus::after{ content:''; position:absolute; background: rgba(0,246,255,0.25); }
+.fly-shape.plus::before{ width:100%; height:2px; top:50%; transform:translateY(-50%); }
+.fly-shape.plus::after{ height:100%; width:2px; left:50%; transform:translateX(-50%); }
+
+@keyframes flyAcross1{ from{ transform: translate(-10vw,110vh) rotate(0deg); } to{ transform: translate(110vw,-10vh) rotate(360deg); } }
+@keyframes flyAcross2{ from{ transform: translate(110vw,-10vh) rotate(0deg); } to{ transform: translate(-10vw,110vh) rotate(-360deg); } }
+@keyframes flyAcross3{ from{ transform: translate(-10vw,-10vh) rotate(0deg); } to{ transform: translate(110vw,110vh) rotate(360deg); } }
+@keyframes flyAcross4{ from{ transform: translate(110vw,110vh) rotate(0deg); } to{ transform: translate(-10vw,-10vh) rotate(-360deg); } }
+
+@media (max-width: 760px){ .fly-shapes{ display:none; } body,a,button,.tab-btn,input,textarea{ cursor:auto; } .cursor-dot,.cursor-ring{ display:none; } }
+
+/* ---------- Parallax-aware layers ---------- */
+.parallax-layer{ will-change: transform; }
+
+/* ---------- Dramatic tab-panel transitions ---------- */
+.tab-panel.leaving{ animation: panelOut 0.32s var(--ease) forwards; pointer-events:none; }
+@keyframes panelOut{ to{ opacity:0; transform: translateY(-26px) scale(0.97); filter: blur(5px); } }
+.tab-panel.active{ animation: panelFlyIn 0.75s var(--ease); }
+@keyframes panelFlyIn{
+  0%{ opacity:0; transform: translateY(46px) scale(0.95); filter: blur(10px); }
+  55%{ opacity:1; filter: blur(0); }
+  100%{ opacity:1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+/* ---------- Section tag draw-in underline ---------- */
+.section-tag{ position:relative; display:inline-block; }
+.section-tag::after{
+  content:''; position:absolute; left:0; bottom:-4px; height:1px; width:0;
+  background: linear-gradient(90deg, var(--cyan), transparent);
+  transition: width 0.9s var(--ease);
+}
+.section-head.in-view .section-tag::after{ width:100%; }
+
+/* ---------- Project media glare sweep ---------- */
+.project-media{ position:relative; }
+.project-media .glare{
+  position:absolute; top:0; left:-60%; width:35%; height:100%; z-index:2;
+  background: linear-gradient(115deg, transparent, rgba(255,255,255,0.28), transparent);
+  transform: skewX(-20deg); pointer-events:none; transition: left 0.8s ease;
+}
+.project-card:hover .glare{ left: 130%; }
+
+/* ---------- Orbit item pop enhancement ---------- */
+.orbit-item{ transition: transform 0.3s var(--ease), box-shadow 0.3s ease; cursor:none; }
+.orbit-item:hover{ transform: scale(1.3) !important; box-shadow: 0 0 24px rgba(0,246,255,0.55); z-index:5; }
+
+/* ---------- Stat number pop on count complete ---------- */
+.stat-num{ display:inline-block; }
+.stat.counted .stat-num{ animation: statPop 0.5s var(--ease); }
+@keyframes statPop{ 0%{ transform: scale(1); } 50%{ transform: scale(1.3); text-shadow:0 0 22px var(--cyan); } 100%{ transform: scale(1); } }
+
+/* ---------- Hero portrait parallax tilt on mouse ---------- */
+.portrait-frame{ transform-style: preserve-3d; transition: transform 0.25s var(--ease); }
+
+/* ---------- Boot loader glitch flair ---------- */
+#boot-loader::before{
+  content:''; position:absolute; inset:0; pointer-events:none; opacity:0.5;
+  background: repeating-linear-gradient(0deg, rgba(0,246,255,0.02) 0px, transparent 2px, transparent 4px);
+}
+
+/* =========================================================================
+   ============  UPGRADE v3.1 — even more layers  =============
+   Scroll-synced timeline fill · glitch hovers · animated borders
+   word-reveal paragraphs · icon bounce · secret easter egg
+========================================================================= */
+
+/* ---------- Timeline: energy line that fills in as you scroll ---------- */
+.timeline{ position:relative; }
+.timeline::after{
+  content:''; position:absolute; left:6px; top:6px; width:2px;
+  height: var(--fill, 0%); max-height: calc(100% - 12px);
+  background: linear-gradient(var(--cyan), var(--purple));
+  box-shadow: 0 0 12px var(--cyan), 0 0 4px #fff;
+  transition: height 0.12s linear; z-index:1; border-radius:2px;
+}
+.timeline-dot{ transition: box-shadow 0.3s ease, background 0.3s ease, transform 0.3s var(--ease); }
+.timeline-dot.lit{ background: var(--cyan); box-shadow: 0 0 20px var(--cyan), 0 0 40px rgba(0,246,255,0.5); transform: scale(1.25); }
+
+/* ---------- Chip glitch-sweep hover ---------- */
+.chip{ position:relative; overflow:hidden; transition: color .3s var(--ease), background .3s var(--ease), border-color .3s var(--ease), transform .25s var(--ease); }
+.chip::before{
+  content:''; position:absolute; top:0; left:-120%; width:60%; height:100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.55), transparent);
+  transform: skewX(-20deg); transition: left 0.55s ease;
+}
+.chip:hover::before{ left:130%; }
+.chip:hover{
+  color:#04060c; background: linear-gradient(90deg, var(--cyan), var(--purple));
+  border-color: transparent; transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0,246,255,0.35);
+}
+
+/* ---------- Nav tab flicker on hover ---------- */
+@keyframes navFlicker{ 0%,100%{ letter-spacing:0.5px; } 50%{ letter-spacing:2.2px; } }
+.tab-btn:hover{ animation: navFlicker 0.35s steps(3,end); }
+
+/* ---------- Animated conic-gradient border on primary button ---------- */
+@property --angle{ syntax:'<angle>'; inherits:false; initial-value:0deg; }
+.btn-primary{ position:relative; z-index:0; isolation:isolate; }
+.btn-primary::before{
+  content:''; position:absolute; inset:-2px; border-radius:11px; z-index:-1;
+  background: conic-gradient(from var(--angle,0deg), var(--cyan), var(--purple), var(--cyan));
+  opacity:0; transition: opacity .3s ease;
+  animation: rotateBorder 2.6s linear infinite;
+}
+.btn-primary:hover::before{ opacity:1; }
+@keyframes rotateBorder{ to{ --angle:360deg; } }
+
+/* ---------- Achievement icon bounce + card shine ---------- */
+.achieve-icon{ display:inline-block; transition: transform .3s var(--ease); }
+.achieve-card:hover .achieve-icon{ animation: iconBounce 0.7s var(--ease); }
+@keyframes iconBounce{
+  0%{ transform: translateY(0) scale(1) rotate(0deg); }
+  30%{ transform: translateY(-12px) scale(1.25) rotate(-8deg); }
+  55%{ transform: translateY(2px) scale(0.92) rotate(6deg); }
+  75%{ transform: translateY(-4px) scale(1.05) rotate(-2deg); }
+  100%{ transform: translateY(0) scale(1) rotate(0deg); }
+}
+
+/* ---------- Word-by-word paragraph reveal ---------- */
+.word-reveal .word{
+  display:inline-block; opacity:0; transform: translateY(0.5em) rotate(3deg);
+  filter: blur(3px);
+  animation: wordIn 0.6s var(--ease) forwards;
+  animation-delay: calc(var(--wi, 0) * 0.045s);
+}
+@keyframes wordIn{ to{ opacity:1; transform: translateY(0) rotate(0deg); filter: blur(0); } }
+
+/* ---------- Typed role glow pulse ---------- */
+#typedRole{ text-shadow: 0 0 0 transparent; transition: text-shadow 0.3s ease; }
+
+/* ---------- Secret easter egg: brand logo pulse-charge ---------- */
+.brand{ cursor:none; user-select:none; }
+.brand.charging{ animation: brandCharge 0.15s ease-in-out infinite alternate; }
+@keyframes brandCharge{ to{ text-shadow: 0 0 14px var(--cyan); transform: scale(1.05); } }
+.easter-burst{
+  position: fixed; z-index: 1200; pointer-events:none; border-radius:50%;
+  border: 2px solid var(--cyan); opacity:1;
+  animation: burstOut 0.9s ease-out forwards;
+}
+@keyframes burstOut{ to{ width:600px; height:600px; margin-left:-300px; margin-top:-300px; opacity:0; border-color: var(--purple); } }
+.easter-msg{
+  position: fixed; top:50%; left:50%; transform: translate(-50%,-50%) scale(0.6);
+  z-index:1201; font-family: var(--font-display); font-weight:900; color: var(--cyan);
+  font-size: clamp(1.2rem, 4vw, 2.4rem); text-shadow: 0 0 30px rgba(0,246,255,0.8);
+  opacity:0; pointer-events:none; text-align:center; white-space:nowrap;
+  animation: easterMsg 1.8s var(--ease) forwards;
+}
+@keyframes easterMsg{
+  0%{ opacity:0; transform: translate(-50%,-50%) scale(0.5); }
+  20%{ opacity:1; transform: translate(-50%,-50%) scale(1.1); }
+  30%{ transform: translate(-50%,-50%) scale(1); }
+  80%{ opacity:1; }
+  100%{ opacity:0; transform: translate(-50%,-50%) scale(1.3); }
+}
+
+/* ---------- Skill row hover micro-glow ---------- */
+.skill-row{ transition: transform .25s var(--ease); }
+.skill-row:hover{ transform: translateX(6px); }
+.skill-row:hover .skill-fill{ box-shadow: 0 0 20px rgba(0,246,255,0.8); }
+
+/* =========================================================================
+   ============  ROUND 2 UPGRADE — v4.0  =============
+   Cursor spark trail · rotating card borders · particle bursts
+   glitch-scan project images · scroll-to-top rocket · corner section dial
+========================================================================= */
+
+/* ---------- Cursor spark-trail canvas ---------- */
+#trail-canvas{
+  position: fixed; inset:0; z-index: 996; pointer-events:none; width:100%; height:100%;
+}
+
+/* ---------- Rotating gradient border sweep on glass cards ---------- */
+.glass-card::before{
+  animation: borderSpin 3.5s linear infinite paused;
+}
+.glass-card:hover::before{ animation-play-state: running; }
+@keyframes borderSpin{
+  0%{ background: linear-gradient(0deg, rgba(0,246,255,0.4), rgba(168,85,247,0.3), transparent 60%); }
+  100%{ background: linear-gradient(360deg, rgba(0,246,255,0.4), rgba(168,85,247,0.3), transparent 60%); }
+}
+
+/* ---------- Skill bar: traveling energy dot at the fill tip ---------- */
+.skill-fill{ position:relative; }
+.skill-fill::before{
+  content:''; position:absolute; right:-2px; top:50%; width:8px; height:8px; border-radius:50%;
+  background: #fff; transform: translateY(-50%); box-shadow: 0 0 10px 3px var(--cyan);
+  animation: skillPulse 1.4s ease-in-out infinite;
+}
+@keyframes skillPulse{ 0%,100%{ opacity:1; transform: translateY(-50%) scale(1); } 50%{ opacity:0.4; transform: translateY(-50%) scale(1.6); } }
+
+/* ---------- Click particle burst ---------- */
+.burst-particle{
+  position: fixed; width:5px; height:5px; border-radius:50%; pointer-events:none; z-index: 1001;
+  background: var(--cyan);
+  animation: burstOut 0.7s cubic-bezier(.16,.84,.44,1) forwards;
+}
+@keyframes burstOut{
+  to{ transform: translate(var(--bx), var(--by)) scale(0); opacity:0; }
+}
+
+/* ---------- Project image glitch-scan on hover ---------- */
+.project-media img{ position:relative; }
+.project-media::before{
+  content:''; position:absolute; inset:0; z-index:3; pointer-events:none; opacity:0;
+  background: linear-gradient(90deg, rgba(255,0,80,0.18), transparent 8%, transparent 92%, rgba(0,246,255,0.18));
+  mix-blend-mode: screen;
+  transition: opacity 0.2s ease;
+}
+.project-card:hover .project-media::before{
+  opacity:1; animation: glitchScan 0.5s steps(2, end) 2;
+}
+@keyframes glitchScan{
+  0%{ transform: translateX(0); }
+  25%{ transform: translateX(-3px); }
+  50%{ transform: translateX(3px); }
+  75%{ transform: translateX(-2px); }
+  100%{ transform: translateX(0); }
+}
+
+/* ---------- Scroll-to-top rocket button ---------- */
+.scroll-top{
+  position: fixed; right: 26px; bottom: 26px; z-index: 500;
+  width: 46px; height: 46px; border-radius: 50%;
+  background: var(--glass); border: 1px solid var(--glass-border); backdrop-filter: blur(10px);
+  color: var(--cyan); display:flex; align-items:center; justify-content:center;
+  cursor: none; opacity:0; pointer-events:none; transform: translateY(30px) scale(0.7);
+  transition: opacity 0.35s var(--ease), transform 0.35s var(--ease), box-shadow 0.3s ease, border-color 0.3s ease;
+  box-shadow: 0 0 0 rgba(0,246,255,0);
+}
+.scroll-top.visible{ opacity:1; pointer-events:auto; transform: translateY(0) scale(1); }
+.scroll-top:hover{ border-color: var(--cyan); box-shadow: 0 0 24px rgba(0,246,255,0.4); transform: translateY(-4px) scale(1.05); }
+.scroll-top.launching{ animation: rocketLaunch 0.6s var(--ease) forwards; }
+@keyframes rocketLaunch{
+  0%{ transform: translateY(0) scale(1); }
+  40%{ transform: translateY(-18px) scale(1.15); }
+  100%{ transform: translateY(-140vh) scale(0.4); opacity:0; }
+}
+@media (hover:none), (pointer:coarse){ .scroll-top{ cursor:pointer; } }
+
+/* ---------- Corner section dial (progress ring: which tab you're on) ---------- */
+.corner-dial{
+  position: fixed; left: 22px; bottom: 22px; z-index: 500;
+  display:flex; align-items:center; gap:8px; pointer-events:none;
+  opacity: 0.85;
+}
+.dial-svg{ width:44px; height:44px; transform: rotate(-90deg); }
+.dial-track{ fill:none; stroke: rgba(0,246,255,0.12); stroke-width: 3; }
+.dial-fill{
+  fill:none; stroke: var(--cyan); stroke-width: 3; stroke-linecap: round;
+  stroke-dasharray: 163; stroke-dashoffset: 163;
+  transition: stroke-dashoffset 0.5s var(--ease);
+  filter: drop-shadow(0 0 4px var(--cyan));
+}
+.dial-label{
+  font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-dim); letter-spacing: 1px;
+}
+@media (max-width: 760px){ .corner-dial{ display:none; } }
+
+/* ---------- Brand logo magnetic glitch on hover ---------- */
+.brand{ position:relative; transition: text-shadow 0.3s ease; cursor:none; }
+.brand:hover{ text-shadow: 0 0 14px rgba(0,246,255,0.6), 2px 0 4px rgba(255,0,80,0.4), -2px 0 4px rgba(0,246,255,0.4); }
+
+/* ---------- Tab button glitch flicker on hover ---------- */
+.tab-btn{ position:relative; }
+.tab-btn:hover span{ animation: tabFlicker 0.3s ease; }
+@keyframes tabFlicker{
+  0%,100%{ opacity:1; } 45%{ opacity:0.5; } 55%{ opacity:1; }
+}
